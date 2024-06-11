@@ -36,7 +36,7 @@ def score_model(model_path, test_data_path, response):
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
-    with open(os.path.join(model_path, "latestscore.txt "), 'w') as f:
+    with open(os.path.join(model_path, "latestscore.txt"), 'w') as f:
         f.write(f"{f1_score}\n")
 
 
