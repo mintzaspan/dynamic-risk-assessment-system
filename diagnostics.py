@@ -33,7 +33,6 @@ def model_predictions(deployed_model_path, test_data, response):
         X_test = test_df
 
     predictions = model.predict(X_test).tolist()
-    print(predictions)
 
     return (predictions)
 
@@ -63,16 +62,30 @@ def dataframe_summary(data_path, exclude):
         std = df[i].std()
         stats.append([i, mean, median, std])
 
-    print(stats)
     return (stats)
-
 
 # Function to get timings
 
 
 def execution_time():
-    # calculate timing of training.py and ingestion.py
-    pass  # return a list of 2 timing values in seconds
+    """Calculate execution timings of training.py and ingestion.py
+
+    Args:
+        None
+
+    Returns:
+        timings: list of execution timings of training.py and ingestion.py
+    """
+
+    ingestion_starttime = timeit.default_timer()
+    os.system('python ingestion.py')
+    ingestion_timing = timeit.default_timer() - ingestion_starttime
+
+    training_starttime = timeit.default_timer()
+    os.system('python training.py')
+    training_timing = timeit.default_timer() - training_starttime
+
+    return ([ingestion_timing, training_timing])
 
 # Function to check dependencies
 
@@ -102,5 +115,7 @@ if __name__ == '__main__':
         exclude=['exited']
     )
 
+    # time ingestion and training
     execution_time()
+
     outdated_packages_list()
