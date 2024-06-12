@@ -14,15 +14,15 @@ def train_model(data_path, response, model_output_path):
     """Trains a Logistic Regression model and saves to folder
 
     Args:
-        data_path : folder where input data CSV is saved
+        data_path : path of CSV dataset
         response: response variable
-        model_output_path: folder to save trained model
+        model_output_path: folder to save trained model as trainedmodel.pkl
 
     Returns:
         None
     """
 
-    data = pd.read_csv(os.path.join(data_path, "finaldata.csv"))
+    data = pd.read_csv(data_path)
     y = data[response]
     X = data.drop(columns=[response])
 
@@ -90,6 +90,6 @@ if __name__ == "__main__":
 
     # Train model and save as pkl
     train_model(
-        data_path=dataset_csv_path,
+        data_path=os.path.join(dataset_csv_path, 'finaldata.csv'),
         response="exited",
         model_output_path=model_path)
