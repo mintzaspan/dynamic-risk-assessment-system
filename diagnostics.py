@@ -87,9 +87,27 @@ def execution_time():
 
     return ([ingestion_timing, training_timing])
 
+# Function to check for missing values
+
+
+def missing_values(data_path):
+    """Calculates the percentage of missing values for every column in a given dataset.
+
+    Args:
+        data path: path to CSV data file
+
+    Returns:
+        missing_stats: list of missing values percentage by column
+    """
+    # import data
+    df = pd.read_csv(data_path)
+
+    missing = (pd.isna(df).sum() / len(df)).to_list()
+
+    return (missing)
+
+
 # Function to check dependencies
-
-
 def outdated_packages_list():
     pass  # get a list of
 
@@ -117,5 +135,11 @@ if __name__ == '__main__':
 
     # time ingestion and training
     execution_time()
+
+    # check for missing values
+    missing_values(
+        data_path=os.path.join(
+            config['output_folder_path'],
+            'finaldata.csv'))
 
     outdated_packages_list()
