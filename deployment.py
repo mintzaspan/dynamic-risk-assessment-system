@@ -3,12 +3,14 @@ import json
 
 
 # function for deployment
-def deploy_model(model_path, ingested_data_path, deployment_path):
-    """Copys the latest pickle file, the latestscore.txt value, and the ingestedfiles.txt file into the deployment directory
+def deploy_model(model_path, score_path, ingested_data_path, deployment_path):
+    """Copies the latest model, the latest score file, and the ingested data file into the deployment directory
 
     Args:
-        model_path: folder that contains trainedmodel.pkl and latestscore.txt
-        ingested_data_path: folder that contains ingestedfiles.txt
+        model_path: path to trained model file
+        score_path : path to latest score file
+        ingested_data_path: path to ingested datasets list file
+        deployment_dir: folder to save deployment files
 
     Return:
         None
@@ -19,11 +21,11 @@ def deploy_model(model_path, ingested_data_path, deployment_path):
         os.makedirs(deployment_path)
 
     os.system(
-        f"cp {os.path.join(model_path, 'trainedmodel.pkl')} {os.path.join(deployment_path, 'trainedmodel.pkl')}")
+        f"cp {model_path} {os.path.join(deployment_path, os.path.basename(model_path))}")
     os.system(
-        f"cp {os.path.join(model_path, 'latestscore.txt')} {os.path.join(deployment_path, 'latestscore.txt')}")
+        f"cp {score_path} {os.path.join(deployment_path, os.path.basename(score_path))}")
     os.system(
-        f"cp {os.path.join(ingested_data_path, 'ingestedfiles.txt')} {os.path.join(deployment_path, 'ingestedfiles.txt')}")
+        f"cp {ingested_data_path} {os.path.join(deployment_path, os.path.basename(ingested_data_path))}")
 
 
 if __name__ == "__main__":
@@ -32,12 +34,15 @@ if __name__ == "__main__":
     with open('config.json', 'r') as f:
         config = json.load(f)
 
-    dataset_csv_path = os.path.join(config['output_folder_path'])
-    model_path = os.path.join(config['output_model_path'])
-    prod_deployment_path = os.path.join(config['prod_deployment_path'])
-
     # deploy
     deploy_model(
-        model_path=model_path,
-        ingested_data_path=dataset_csv_path,
-        deployment_path=prod_deployment_path)
+        model_path=os.path.join(
+            config['output_model_path'],
+            'trainedmodel.pkl'),
+        score_path=os.path.join(
+            config['output_model_path'],
+            'latestscore.txt'),
+        ingested_data_path=os.path.join(
+            config['output_folder_path'],
+            'ingestedfiles.txt'),
+        deployment_path=config['prod_deployment_path'])

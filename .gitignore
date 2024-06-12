@@ -1,6 +1,9 @@
 # Byte-compiled / optimized / DLL files
 ingesteddata/
 practicemodels/
+production_deployment/
+
+
 .DS_Store
 __pycache__/
 *.py[cod]
