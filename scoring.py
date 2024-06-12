@@ -20,12 +20,12 @@ def score_model(model_path, test_data_path, response):
     """
 
     # read test data
-    test_df = pd.read_csv(os.path.join(test_data_path, "testdata.csv"))
+    test_df = pd.read_csv(test_data_path)
     y_test = test_df[response]
     X_test = test_df.drop(columns=[response])
 
     # load trained model
-    with open(os.path.join(model_path, "trainedmodel.pkl"), "rb") as f:
+    with open(model_path, "rb") as f:
         model = pickle.load(f)
 
     # calculate F1 score
@@ -36,7 +36,7 @@ def score_model(model_path, test_data_path, response):
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
-    with open(os.path.join(model_path, "latestscore.txt"), 'w') as f:
+    with open(os.path.join(os.path.dirname(model_path), "latestscore.txt"), 'w') as f:
         f.write(f"{f1_score}\n")
 
 
@@ -51,6 +51,6 @@ if __name__ == '__main__':
 
     # Score model
     score_model(
-        model_path=model_path,
-        test_data_path=test_data_path,
+        model_path=os.path.join(model_path, 'trainedmodel.pkl'),
+        test_data_path=os.path.join(test_data_path, 'testdata.csv'),
         response="exited")
