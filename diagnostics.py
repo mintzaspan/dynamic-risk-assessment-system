@@ -40,9 +40,32 @@ def model_predictions(deployed_model_path, test_data, response):
 # Function to get summary statistics
 
 
-def dataframe_summary():
-    # calculate summary statistics here
-    pass  # return value should be a list containing all summary statistics
+def dataframe_summary(data_path, exclude):
+    """Calculates summary statistics for numericals columns of a dataset
+
+    Args:
+        data_path: path to CSV data file
+        exclude: list of columns to exclude
+
+    Returns:
+        stats: list of lists with column name, mean, median, standard deviation
+    """
+
+    # import data
+    df = pd.read_csv(data_path).select_dtypes('number')
+    df.drop(columns=exclude, inplace=True, errors='ignore')
+
+    # calculate statistics
+    stats = []
+    for i in df.columns.tolist():
+        mean = df[i].mean()
+        median = df[i].median()
+        std = df[i].std()
+        stats.append([i, mean, median, std])
+
+    print(stats)
+    return (stats)
+
 
 # Function to get timings
 
@@ -74,6 +97,10 @@ if __name__ == '__main__':
             'testdata.csv'),
         response='exited')
 
-    dataframe_summary()
+    dataframe_summary(
+        data_path=os.path.join(config['output_folder_path'], 'finaldata.csv'),
+        exclude=['exited']
+    )
+
     execution_time()
     outdated_packages_list()
