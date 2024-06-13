@@ -5,6 +5,7 @@ import timeit
 import os
 import json
 import pickle
+import requests
 
 
 # Function to get model predictions
@@ -108,8 +109,43 @@ def missing_values(data_path):
 
 
 # Function to check dependencies
-def outdated_packages_list():
-    pass  # get a list of
+def outdated_packages_list(requirements_path):
+    """Checks for latest version of packages in the requirements file
+
+    Args:
+        requirements_path: path to requirements.txt
+
+    Returns:
+        None
+    """
+
+    with open(requirements_path, 'r') as f:
+        lines = f.readlines()
+
+    packages = []
+    current_versions = []
+    for line in lines:
+
+        # package names
+        p = line.split('==')[0]
+        packages.append(p)
+
+        # current versions
+        cv = line.split('==')[1].replace('\n', '')
+        current_versions.append(cv)
+
+    latest_versions = []
+    for p in packages:
+        response = requests.get(f'https://pypi.org/pypi/{p}/json')
+        lv = response.json()['info']['version']
+        latest_versions.append(lv)
+
+    print(
+        pd.DataFrame(
+            data={
+                'package_name': packages,
+                'current_version': current_versions,
+                'latest_version': latest_versions}))
 
 
 if __name__ == '__main__':
@@ -142,4 +178,4 @@ if __name__ == '__main__':
             config['output_folder_path'],
             'finaldata.csv'))
 
-    outdated_packages_list()
+    outdated_packages_list("requirements.txt")
