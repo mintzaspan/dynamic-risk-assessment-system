@@ -1,32 +1,42 @@
-import pickle
-from sklearn.model_selection import train_test_split
+# import pickle
 import pandas as pd
-import numpy as np
-from sklearn import metrics
 import matplotlib.pyplot as plt
-import seaborn as sns
 import json
 import os
+from diagnostics import model_predictions
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+# Function for reporting
 
 
+def score_model(deployed_model_path, test_data, response, output_path):
+    """Calculates a confusion matrix using the test data and the deployed model,
+    then writes the confusion matrix to the workspace.
+    """
 
-###############Load config.json and get path variables
-with open('config.json','r') as f:
-    config = json.load(f) 
+    # calculate predictions first
+    predictions = model_predictions(deployed_model_path, test_data, response)
 
-dataset_csv_path = os.path.join(config['output_folder_path']) 
-
-
-
-
-##############Function for reporting
-def score_model():
-    #calculate a confusion matrix using the test data and the deployed model
-    #write the confusion matrix to the workspace
-
-
-
+    # confusion matrix
+    y_test = pd.read_csv(test_data)[response]
+    cm = confusion_matrix(y_true=y_test, y_pred=predictions)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+    disp.plot()
+    plt.savefig(os.path.join(output_path, 'confusionmatrix.png'))
 
 
 if __name__ == '__main__':
-    score_model()
+
+    # Load config.json and get path variables
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+
+    # Score
+    score_model(deployed_model_path=os.path.join(
+        config['prod_deployment_path'],
+        'trainedmodel.pkl'),
+        test_data=os.path.join(
+            config['test_data_path'],
+            'testdata.csv'),
+        response='exited',
+        output_path=config['output_model_path'])
