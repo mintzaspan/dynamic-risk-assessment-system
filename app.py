@@ -20,8 +20,7 @@ prediction_model = None
 # Prediction Endpoint
 @app.route("/prediction", methods=['POST', 'OPTIONS'])
 def predict():
-    # call the prediction function you created in Step 3
-    test_path = request.args.get('test_path')
+    test_path = request.json.get('test_path')
     predictions = model_predictions(
         deployed_model_path=os.path.join(
             config['prod_deployment_path'],
@@ -29,19 +28,19 @@ def predict():
         test_data=test_path,
         response='exited'
     )
-    return (jsonify(predictions.tolist()))
+    return (jsonify(predictions))
 
 # Scoring Endpoint
 
 
 @app.route("/scoring", methods=['GET', 'OPTIONS'])
-def stats():
+def score():
     # check the score of the deployed model
     subprocess.run(["python", "scoring.py"])
     with open(os.path.join(config['output_model_path'], 'latestscore.txt')) as f:
         flat_list = [word for line in f for word in line.split()]
         score = float(flat_list[0])
-    return (score)  # add return value (a single F1 score number)
+    return (jsonify(score))  # add return value (a single F1 score number)
 
 # Summary Statistics Endpoint
 
@@ -58,7 +57,7 @@ def stats():
 
 
 @app.route("/diagnostics", methods=['GET', 'OPTIONS'])
-def stats():
+def diagnostics():
     # check timing and percent NA values
     timings = execution_time()
     missing = missing_values(
