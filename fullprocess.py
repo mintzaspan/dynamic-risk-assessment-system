@@ -2,6 +2,7 @@ import json
 import os
 import glob
 import sys
+import subprocess
 
 
 # Load config.json and get environment variables
@@ -26,6 +27,8 @@ for file in glob.glob(os.path.join(config['input_folder_path'], '*.csv')):
 # if you found new data, you should proceed. otherwise, do end the process here
 if len(new_files) == 0:
     sys.exit(0)
+else:
+    subprocess.run(["python", "ingestion.py"])
 
 # Checking for model drift
 # check whether the score from the deployed model is different from the
