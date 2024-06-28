@@ -1,5 +1,7 @@
 import json
 import os
+import glob
+import sys
 
 
 # Load config.json and get environment variables
@@ -14,11 +16,16 @@ with open(os.path.join(config['output_folder_path'], 'ingestedfiles.txt'), 'r') 
 
 # second, determine whether the source data folder has files that aren't
 # listed in ingestedfiles.txt
+new_files = []
+for file in glob.glob(os.path.join(config['input_folder_path'], '*.csv')):
+    if file not in ingested_files:
+        new_files.append(file)
 
 
 # Deciding whether to proceed, part 1
 # if you found new data, you should proceed. otherwise, do end the process here
-
+if len(new_files) == 0:
+    sys.exit(0)
 
 # Checking for model drift
 # check whether the score from the deployed model is different from the
