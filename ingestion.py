@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 # Function for data ingestion
-def merge_multiple_dataframe(input_path, output_path):
+def merge_multiple_dataframes(input_path, output_path):
     """Checks for CSV files, compiles them together and writes to a CSV in the output path.
     Also lists ingested CSV files in txt in the output path.
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         config = json.load(f)
 
     # Ingest data
-    csv_files, final_df = merge_multiple_dataframe(
+    csv_files, final_df = merge_multiple_dataframes(
         config['input_folder_path'], config['output_folder_path'])
 
     # create output dir if it does not exist
