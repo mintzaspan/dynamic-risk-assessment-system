@@ -145,7 +145,7 @@ def outdated_packages_list(requirements_path):
             data={
                 'package_name': packages,
                 'current_version': current_versions,
-                'latest_version': latest_versions}))
+                'latest_version': latest_versions}).values.tolist())
 
 
 if __name__ == '__main__':
