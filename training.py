@@ -10,8 +10,8 @@ import json
 
 
 # Function for training the model
-def train_model(data_path, response, model_output_path):
-    """Trains a Logistic Regression model and saves to folder
+def train_model(data_path, response):
+    """Trains a Logistic Regression model
 
     Args:
         data_path : path of CSV dataset
@@ -19,7 +19,7 @@ def train_model(data_path, response, model_output_path):
         model_output_path: folder to save trained model as trainedmodel.pkl
 
     Returns:
-        None
+        pipe: a pipeline including a preprocessing step and a trained Logistic Regression model
     """
 
     data = pd.read_csv(data_path)
@@ -69,14 +69,7 @@ def train_model(data_path, response, model_output_path):
     # fit the logistic regression to your data
     pipe.fit(X, y)
 
-    # check if model_output_path exists
-    if not os.path.exists(model_output_path):
-        os.makedirs(model_output_path)
-
-    # write the trained model to your workspace in a file called
-    # trainedmodel.pkl
-    with open(os.path.join(model_output_path, "trainedmodel.pkl"), "wb") as f:
-        pickle.dump(obj=pipe, file=f)
+    return (pipe)
 
 
 if __name__ == "__main__":
@@ -85,11 +78,16 @@ if __name__ == "__main__":
     with open('config.json', 'r') as f:
         config = json.load(f)
 
-    dataset_csv_path = os.path.join(config['output_folder_path'])
-    model_path = os.path.join(config['output_model_path'])
-
     # Train model and save as pkl
-    train_model(
-        data_path=os.path.join(dataset_csv_path, 'finaldata.csv'),
-        response="exited",
-        model_output_path=model_path)
+    pipe = train_model(
+        data_path=os.path.join(config['output_folder_path'], 'finaldata.csv'),
+        response="exited")
+
+    # check if model_output_path exists
+    if not os.path.exists(config['output_model_path']):
+        os.makedirs(config['output_model_path'])
+
+    # write the trained model to your workspace in a file called
+    # trainedmodel.pkl
+    with open(os.path.join(config['output_model_path'], "trainedmodel.pkl"), "wb") as f:
+        pickle.dump(obj=pipe, file=f)
