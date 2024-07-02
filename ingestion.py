@@ -15,7 +15,8 @@ def merge_multiple_dataframe(input_path, output_path):
         output_path : path to write compiled file
 
     Returns:
-        None
+        csv_files : files used to creat final df
+        final_df : final dataframe
     """
 
     csv_files = [f for f in os.listdir(input_path) if f.endswith('.csv')]
@@ -28,20 +29,7 @@ def merge_multiple_dataframe(input_path, output_path):
     final_df = pd.concat(objs=df_list, axis=0, ignore_index=True)
     final_df.drop_duplicates(inplace=True, ignore_index=True)
 
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-
-    # write df to CSV
-    final_df.to_csv(
-        path_or_buf=os.path.join(
-            output_path,
-            'finaldata.csv'),
-        index=False)
-
-    # write ingested filenames to txt
-    with open(os.path.join(output_path, "ingestedfiles.txt"), 'w') as f:
-        for file in csv_files:
-            f.write(f"{os.path.join(input_path,file)}\n")
+    return (csv_files, final_df)
 
 
 if __name__ == '__main__':
@@ -50,8 +38,22 @@ if __name__ == '__main__':
     with open('config.json', 'r') as f:
         config = json.load(f)
 
-    input_folder_path = config['input_folder_path']
-    output_folder_path = config['output_folder_path']
-
     # Ingest data
-    merge_multiple_dataframe(input_folder_path, output_folder_path)
+    csv_files, final_df = merge_multiple_dataframe(
+        config['input_folder_path'], config['output_folder_path'])
+
+    # create output dir if it does not exist
+    if not os.path.exists(config['output_folder_path']):
+        os.makedirs(config['output_folder_path'])
+
+    # write df to CSV
+    final_df.to_csv(
+        path_or_buf=os.path.join(
+            config['output_folder_path'],
+            'finaldata.csv'),
+        index=False)
+
+    # write ingested filenames to txt
+    with open(os.path.join(config['output_folder_path'], "ingestedfiles.txt"), 'w') as f:
+        for file in csv_files:
+            f.write(f"{os.path.join(config['input_folder_path'], file)}\n")
