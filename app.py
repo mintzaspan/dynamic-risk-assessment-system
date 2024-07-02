@@ -1,4 +1,4 @@
-from flask import Flask, session, jsonify, request
+from flask import Flask, jsonify, request
 from diagnostics import model_predictions, dataframe_summary, execution_time, missing_values, outdated_packages_list
 import json
 import os
@@ -30,9 +30,8 @@ def predict():
     )
     return (jsonify(predictions))
 
+
 # Scoring Endpoint
-
-
 @app.route("/scoring", methods=['GET', 'OPTIONS'])
 def score():
     # check the score of the deployed model
@@ -42,9 +41,8 @@ def score():
         score = float(flat_list[0])
     return (jsonify(score))  # add return value (a single F1 score number)
 
+
 # Summary Statistics Endpoint
-
-
 @app.route("/summarystats", methods=['GET', 'OPTIONS'])
 def stats():
     # check means, medians, and modes for each column
@@ -53,9 +51,8 @@ def stats():
         exclude=['exited'])
     return (jsonify(ss))  # return a list of all calculated summary statistics
 
+
 # Diagnostics Endpoint
-
-
 @app.route("/diagnostics", methods=['GET', 'OPTIONS'])
 def diagnostics():
     # check timing and percent NA values
