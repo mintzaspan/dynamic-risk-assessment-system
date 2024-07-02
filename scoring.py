@@ -7,8 +7,7 @@ import json
 
 # Function for model scoring
 def score_model(model_path, test_data_path, response):
-    """Takes a trained model, loads test data, and calculates an F1 score for the model relative to the test data.
-    Then writes the result to the latestscore.txt file
+    """Takes a trained model, loads test data, and calculates an F1 score.
 
     Args:
         model_path: path to trained model
@@ -16,7 +15,7 @@ def score_model(model_path, test_data_path, response):
         response: response variable
 
     Returns:
-        None
+        f1_score : F1 score
     """
 
     # read test data
@@ -32,12 +31,7 @@ def score_model(model_path, test_data_path, response):
     y_pred = model.predict(X_test)
     f1_score = fbeta_score(y_true=y_test, y_pred=y_pred, beta=1)
 
-    # save to file
-    if not os.path.exists(model_path):
-        os.makedirs(model_path)
-
-    with open(os.path.join(os.path.dirname(model_path), "latestscore.txt"), 'w') as f:
-        f.write(f"{f1_score}\n")
+    return (f1_score)
 
 
 if __name__ == '__main__':
@@ -46,11 +40,19 @@ if __name__ == '__main__':
     with open('config.json', 'r') as f:
         config = json.load(f)
 
-    model_path = os.path.join(config['output_model_path'])
-    test_data_path = os.path.join(config['test_data_path'])
-
     # Score model
-    score_model(
-        model_path=os.path.join(model_path, 'trainedmodel.pkl'),
-        test_data_path=os.path.join(test_data_path, 'testdata.csv'),
+    f1_score = score_model(
+        model_path=os.path.join(
+            config['output_model_path'],
+            'trainedmodel.pkl'),
+        test_data_path=os.path.join(
+            config['test_data_path'],
+            'testdata.csv'),
         response="exited")
+
+    # save to file
+    if not os.path.exists(config['output_model_path']):
+        os.makedirs(config['output_model_path'])
+
+    with open(os.path.join(config['output_model_path'], "latestscore.txt"), 'w') as f:
+        f.write(f"{f1_score}")
