@@ -140,7 +140,7 @@ def outdated_packages_list(requirements_path):
         lv = response.json()['info']['version']
         latest_versions.append(lv)
 
-    print(
+    return (
         pd.DataFrame(
             data={
                 'package_name': packages,
