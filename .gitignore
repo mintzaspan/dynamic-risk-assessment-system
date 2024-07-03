@@ -2,6 +2,7 @@
 ingesteddata/
 practicemodels/
 production_deployment/
+models/
 
 
 .DS_Store
