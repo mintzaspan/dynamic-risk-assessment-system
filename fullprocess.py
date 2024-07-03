@@ -67,25 +67,4 @@ if (decision_1 & decision_2):
     subprocess.run(['python', 'scoring.py'])
     subprocess.run(['python', 'deployment.py'])
     subprocess.run(['python', 'reporting.py'])
-    subprocess.run(['python', 'app.py'])
     subprocess.run(['python', 'apicalls.py'])
-
-
-# # with open(os.path.join(config['output_model_path'], 'latestscore.txt'), 'r') as file:
-# #     new_score = float(file.read().strip())
-
-# # Deciding whether to proceed, part 2
-# # if you found model drift, you should proceed. otherwise, do end the
-# # process here
-# if new_score <= current_score:
-#     sys.exit(0)
-# # Re-deployment
-# # if you found evidence for model drift, re-run the deployment.py script
-# else:
-#     subprocess.run(["python", "deployment.py"])
-#     # Diagnostics and reporting
-#     # run diagnostics.py and reporting.py for the re-deployed model
-#     subprocess.run(["python", "diagnostics.py"])
-#     subprocess.run(["python", "reporting.py"])
-#     subprocess.run(["python", "app.py"])
-#     subprocess.run(["python", "apicalls.py"])
